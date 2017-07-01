@@ -14,14 +14,12 @@ contract SaintArnouldToken {
     uint256 public fundingEndBlock;
     uint256 public locked_allocation;
     uint256 public unlockingBlock;
-    
+
+    // Receives ETH for founders.
     address public founders;
 
     // The flag indicates if the SAT contract is in Funding state.
     bool public funding_ended = false;
-
-    // Receives ETH for founders.
-    address public SATfounders;
 
     // The current total token supply.
     uint256 totalTokens;
@@ -76,11 +74,10 @@ contract SaintArnouldToken {
     /// @notice Create tokens when funding is active.
     /// @dev Required state: Funding Active
     /// @dev State transition: -> Funding Success (only if cap reached)
-    function buy(address _senders) internal {
+    function buy(address _sender) internal {
         // Abort if not in Funding Active state.
-        // The checks are split (instead of using or operator) because it is
-        // cheaper this way.
         if (funding_ended) throw;
+        // The checking for blocktimes.
         if (block.number < fundingStartBlock) throw;
         if (block.number > fundingEndBlock) throw;
 
@@ -91,13 +88,13 @@ contract SaintArnouldToken {
         totalTokens += numTokens;
 
         // Assign new tokens to the sender
-        balances[_senders] += numTokens;
+        balances[_sender] += numTokens;
 
         // sending funds to founders
         founders.transfer(msg.value);
 
         // Log token creation event
-        Transfer(0, _senders, numTokens);
+        Transfer(0, _sender, numTokens);
     }
 
     /// @notice Finalize crowdfunding
@@ -109,12 +106,11 @@ contract SaintArnouldToken {
         balances[founders] = locked_allocation;
         totalTokens += locked_allocation;
         
-        unlockingBlock = block.number + 914823
+        unlockingBlock = block.number + 914823   //about 6 months locked time.
         funding_ended = true;
     }
 
     function transferFounders(address _to, uint256 _value) public returns (bool) {
-        // Abort if not in Operational state.
         if (!funding_ended) throw;
         if (block.number <= unlockingBlock) throw;
         if (msg.sender != founders) throw;
