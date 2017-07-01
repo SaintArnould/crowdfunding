@@ -7,7 +7,7 @@ ICO(イニシャルコインオファリング)はEtheruem上のスマートコ�
 2. セール期間は `fundingStartBlock` から `fundingEndBlock`まで
 3. 発行者はセール終了後販売量の10%を追加で発行し6ヶ月間ロックする。
 
-ご質問は @syrohei　もしくは syrohei@gmail.com　まで。
+ご質問は [@syrohei](https://twitter.com/syrohei)　もしくは syrohei@gmail.com　まで。
 
 仕様環境
 - Truffle v3.2.5
