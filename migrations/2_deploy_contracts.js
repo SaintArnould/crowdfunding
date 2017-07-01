@@ -1,8 +1,5 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
-var MetaCoin = artifacts.require("./MetaCoin.sol");
+var SaintArnouldToken = artifacts.require("./SaintArnouldToken.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+  deployer.deploy(SaintArnouldToken, "0x607e64ea385a0fcc92f40a49d4a1fa2603ef45a8", 200, 2000);
 };

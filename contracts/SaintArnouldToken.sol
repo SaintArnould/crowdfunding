@@ -1,7 +1,4 @@
-
-contract MigrationAgent {
-    function migrateFrom(address _from, uint256 _value);
-}
+pragma solidity ^0.4.4;
 
 /// @title SaintArnould (Tokyo) Token (SAT) -
 contract SaintArnouldToken {
@@ -9,49 +6,38 @@ contract SaintArnouldToken {
     string public constant symbol = "SAT";
     uint8 public constant decimals = 18;  // 18 decimal places, the same as ETH.
 
-    uint256 public constant tokenCreationRate = 10000;
-
-    // The funding cap in weis.
-    uint256 public constant tokenCreationCap = 1200 ether * tokenCreationRate;
-    uint256 public constant tokenCreationMin = 400 ether * tokenCreationRate;
+    uint256 public constant tokenCreationRate = 5000;  //creation rate 1 ETH = 5000 SAT
+    uint256 public constant firstTokenCap = 10 ether * tokenCreationRate; 
+    uint256 public constant secondTokenCap = 1081 ether * tokenCreationRate; //32,500,000 YEN
 
     uint256 public fundingStartBlock;
     uint256 public fundingEndBlock;
+    uint256 public locked_allocation;
+    
+    address public founders;
 
     // The flag indicates if the SAT contract is in Funding state.
-    bool public funding = true;
+    bool public funding_ended = false;
 
     // Receives ETH for founders.
     address public SATfounders;
-
-    // Has control over token migration to next version of token.
-    address public migrationMaster;
-
 
     // The current total token supply.
     uint256 totalTokens;
 
     mapping (address => uint256) balances;
 
-    address public migrationAgent;
-    uint256 public totalMigrated;
-
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Migrate(address indexed _from, address indexed _to, uint256 _value);
-    event Refund(address indexed _from, uint256 _value);
 
-    function SaintArnouldToken(address _SATfounders,
-                               address _migrationMaster,
+    function SaintArnouldToken(address _founders,
                                uint256 _fundingStartBlock,
                                uint256 _fundingEndBlock) {
 
-        if (_SATfounders == 0) throw;
-        if (_migrationMaster == 0) throw;
+        if (_founders == 0) throw;
         if (_fundingStartBlock <= block.number) throw;
         if (_fundingEndBlock   <= _fundingStartBlock) throw;
 
-        migrationMaster = _migrationMaster;
-        golemFactory = _SATfounders;
+        founders = _founders;
         fundingStartBlock = _fundingStartBlock;
         fundingEndBlock = _fundingEndBlock;
     }
@@ -61,9 +47,10 @@ contract SaintArnouldToken {
     /// @param _to The address of the tokens recipient
     /// @param _value The amount of token to be transferred
     /// @return Whether the transfer was successful or not
-    function transfer(address _to, uint256 _value) returns (bool) {
+    function transfer(address _to, uint256 _value) public returns (bool) {
         // Abort if not in Operational state.
-
+        if (!funding_ended) throw;
+        if (msg.sender == founders) throw;
         var senderBalance = balances[msg.sender];
         if (senderBalance >= _value && _value > 0) {
             senderBalance -= _value;
@@ -88,62 +75,59 @@ contract SaintArnouldToken {
     /// @notice Create tokens when funding is active.
     /// @dev Required state: Funding Active
     /// @dev State transition: -> Funding Success (only if cap reached)
-    function create() payable internal {
+    function buy(address _senders) internal {
         // Abort if not in Funding Active state.
         // The checks are split (instead of using or operator) because it is
         // cheaper this way.
-        if (!funding) throw;
+        if (funding_ended) throw;
         if (block.number < fundingStartBlock) throw;
         if (block.number > fundingEndBlock) throw;
 
         // Do not allow creating 0 or more than the cap tokens.
         if (msg.value == 0) throw;
-        if (msg.value > (tokenCreationCap - totalTokens) / tokenCreationRate)
-            throw;
 
         var numTokens = msg.value * tokenCreationRate;
         totalTokens += numTokens;
 
         // Assign new tokens to the sender
-        balances[msg.sender] += numTokens;
+        balances[_senders] += numTokens;
+
+        // sending funds to founders
+        founders.transfer(msg.value);
 
         // Log token creation event
-        Transfer(0, msg.sender, numTokens);
+        Transfer(0, _senders, numTokens);
     }
 
     /// @notice Finalize crowdfunding
     function finalize() external {
-        if ((block.number <= fundingEndBlock ||
-             totalTokens < tokenCreationMin) &&
-            totalTokens < tokenCreationCap) throw;
+        if (block.number <= fundingEndBlock) throw;
 
-        uint256 percentOfTotal = 18;
-        uint256 additionalTokens =
-            totalTokens * percentOfTotal / (100 - percentOfTotal);
-        totalTokens += additionalTokens;
-        balances[lockedAllocation] += additionalTokens;
-        Transfer(0, lockedAllocation, additionalTokens);
-
-        // Transfer ETH to the Golem Factory address.
-        if (!golemFactory.send(this.balance)) throw;
+        //locked allocation for founders 
+        locked_allocation = totalTokens * 10 / 100;
+        balances[founders] = locked_allocation;
+        totalTokens += locked_allocation;
+        
+        funding_ended = true;
     }
 
-    /// @notice Get back the ether sent during the funding in case the funding
-    /// has not reached the minimum level.
-    /// @dev Required state: Funding Failure
-    function refund() external {
-        // Abort if not in Funding Failure state.
-        if (failure) throw;
-        if (block.number <= fundingEndBlock) throw;
-        if (totalTokens >= tokenCreationMin) throw;
+    function transferFounders(address _to, uint256 _value) public returns (bool) {
+        // Abort if not in Operational state.
+        if (!funding_ended) throw;
+        if (msg.sender != founders) throw;
+        var senderBalance = balances[msg.sender];
+        if (senderBalance >= _value && _value > 0) {
+            senderBalance -= _value;
+            balances[msg.sender] = senderBalance;
+            balances[_to] += _value;
+            Transfer(msg.sender, _to, _value);
+            return true;
+        }
+        return false;
+    }
 
-        var gntValue = balances[msg.sender];
-        if (gntValue == 0) throw;
-        balances[msg.sender] = 0;
-        totalTokens -= gntValue;
-
-        var ethValue = gntValue / tokenCreationRate;
-        Refund(msg.sender, ethValue);
-        if (!msg.sender.send(ethValue)) throw;
+    /// @notice If anybody sends Ether directly to this contract, consider he is
+    function() public payable {
+        buy(msg.sender);
     }
 }
