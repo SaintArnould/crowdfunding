@@ -1,7 +1,11 @@
 # SaintArnould (Tokyo) Token and CrowdSale Contracts
 
-## Getting startd
+## Getting started
 ICO(イニシャルコインオファリング)はEtheruem上のスマートコントラクトで自動生成されます。
+
+1. 発行上限はなし。
+2. セール期間は `fundingStartBlock` から `fundingEndBlock`まで
+3. 発行者はセール終了後販売量の10%を追加で発行し6ヶ月間ロックする。
 
 ご質問は @syrohei　もしくは syrohei@gmail.com　まで。
 

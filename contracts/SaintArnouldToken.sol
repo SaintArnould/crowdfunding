@@ -13,6 +13,7 @@ contract SaintArnouldToken {
     uint256 public fundingStartBlock;
     uint256 public fundingEndBlock;
     uint256 public locked_allocation;
+    uint256 public unlockingBlock;
     
     address public founders;
 
@@ -108,12 +109,14 @@ contract SaintArnouldToken {
         balances[founders] = locked_allocation;
         totalTokens += locked_allocation;
         
+        unlockingBlock = block.number + 914823
         funding_ended = true;
     }
 
     function transferFounders(address _to, uint256 _value) public returns (bool) {
         // Abort if not in Operational state.
         if (!funding_ended) throw;
+        if (block.number <= unlockingBlock) throw;
         if (msg.sender != founders) throw;
         var senderBalance = balances[msg.sender];
         if (senderBalance >= _value && _value > 0) {
