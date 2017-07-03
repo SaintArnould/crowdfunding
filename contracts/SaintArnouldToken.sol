@@ -8,7 +8,7 @@ contract SaintArnouldToken {
 
     uint256 public constant tokenCreationRate = 5000;  //creation rate 1 ETH = 5000 SAT
     uint256 public constant firstTokenCap = 10 ether * tokenCreationRate; 
-    uint256 public constant secondTokenCap = 1081 ether * tokenCreationRate; //32,500,000 YEN
+    uint256 public constant secondTokenCap = 920 ether * tokenCreationRate; //27,900,000 YEN
 
     uint256 public fundingStartBlock;
     uint256 public fundingEndBlock;
@@ -106,7 +106,7 @@ contract SaintArnouldToken {
         balances[founders] = locked_allocation;
         totalTokens += locked_allocation;
         
-        unlockingBlock = block.number + 914823   //about 6 months locked time.
+        unlockingBlock = block.number + 864000;   //about 6 months locked time.
         funding_ended = true;
     }
 
