@@ -3,7 +3,7 @@
 ## Getting started
 ICO(イニシャルコインオファリング)はEtheruem上のスマートコントラクトで自動生成されます。
 
-1. 発行上限はなし。
+1. 発行上限はなし。 1 ETH = 5000 SAT
 2. セール期間は `fundingStartBlock` から `fundingEndBlock`まで
 3. 発行者はセール終了後販売量の10%を追加で発行し6ヶ月間ロックする。
 
