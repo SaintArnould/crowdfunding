@@ -42,8 +42,9 @@ function buy(address _sender) internal { }
 function finalize() external { }
 ```
 セール終了後のコントラクト制御を制限します。また、トークン送金が可能になります。
-
+```
 function transferFounders(address _to, uint256 _value) public returns (bool) { }
+```
 
 ファウンダーのトークンはロックされており、あるblocktimeに到達しない限り送信されることはありません。
 ファウンダーは通常の`transfer()`を使うことができないことに注意してください。
