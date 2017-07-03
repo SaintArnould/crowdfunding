@@ -23,14 +23,30 @@ truffle migrate
 
 このコントラクトは現在監査中です。もしバグが見つかった場合には速やかにTwitterを通し監査報告をすることとします。
 
-2017/7/3 17:00　- Contract Test and Deployment process test has been verified.　
+2017/7/3 17:00 - Contract Test and Deployment process test has been verified.　
 
-2017/7/3 17:04  - コントラクトのバグ調査を開始、約72時間後に監査が完了しmasterブランチにマージされる予定です。
+2017/7/3 17:04 - コントラクトのバグ調査を開始、約72時間後に監査が完了しmasterブランチにマージされる予定です。
 
+## Fnctions 
+```
+function transfer(address _to, uint256 _value) public returns (bool) { }
+```
+セールで購入されたアドレスはこのfunctionをコールしてトークンを送信します。
 
+```
+function buy(address _sender) internal { }
+```
+購入function。トリガーはコントラクトに着金した時
 
+```
+function finalize() external { }
+```
+セール終了後のコントラクト制御を制限します。また、トークン送金が可能になります。
 
+function transferFounders(address _to, uint256 _value) public returns (bool) { }
 
+ファウンダーのトークンはロックされており、あるblocktimeに到達しない限り送信されることはありません。
+ファウンダーは通常の`transfer()`を使うことができないことに注意してください。
 
 ## Test
 
