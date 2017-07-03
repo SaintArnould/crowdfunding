@@ -19,6 +19,19 @@ npm install
 truffle migrate
 ```
 
+## Contract Audit 
+
+このコントラクトは現在監査中です。もしバグが見つかった場合には速やかにTwitterを通し監査報告をすることとします。
+
+2017/7/3 17:00　- Contract Test and Deployment process test has been verified.　
+
+2017/7/3 17:04  - コントラクトのバグ調査を開始、約72時間後に監査が完了しmasterブランチにマージされる予定です。
+
+
+
+
+
+
 ## Test
 
 To run the tests, run a TestRPC locally with testrpc -b 1 and run this code.
