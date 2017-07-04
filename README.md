@@ -27,6 +27,8 @@ truffle migrate
 
 2017/7/3 17:04 - コントラクトのバグ調査を開始、約72時間後に監査が完了しmasterブランチにマージされる予定です。
 
+2017/7/4 14:20 - **バグバウンティプログラムを開始、最大20ETHまでを上限にコードの監査結果を募集します。**
+
 ## Fnctions 
 ```
 function transfer(address _to, uint256 _value) public returns (bool) { }
