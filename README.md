@@ -29,6 +29,8 @@ truffle migrate
 
 2017/7/4 14:20 - **バグバウンティプログラムを開始、最大20ETHまでを上限にコードの監査結果を募集します。**
 
+2017/7/7 21:00 - **スマートコントラクトはレビュー状態を終了しパブリックライブに移行しました。**
+
 ## Fnctions 
 ```
 function transfer(address _to, uint256 _value) public returns (bool) { }
