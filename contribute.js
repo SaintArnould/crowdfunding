@@ -2,8 +2,8 @@
 
 module.exports = function (callback) {
 
-    const sender = web3.eth.accounts[0]
-    const contract_address = "0x139b127413edcec4574b4750d24b6cf558b6b1d3"
+    const sender = web3.eth.accounts[1]
+    const contract_address = "0x77499fd57915542718d184a6924e7adfc437dd3f"
 
     web3.eth.sendTransaction({
       from: sender,

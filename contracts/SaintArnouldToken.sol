@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.11;
 
 /// @title SaintArnould (Tokyo) Token (SAT) -
 contract SaintArnouldToken {
