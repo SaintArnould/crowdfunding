@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/SaintArnould/crowdfunding#readme",
   "dependencies": {
+    "ethereumjs-abi": "^0.6.4",
     "rx": "^4.1.0"
   }
 }

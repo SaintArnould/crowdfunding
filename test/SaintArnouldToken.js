@@ -2,8 +2,8 @@ const SaintArnouldToken = artifacts.require("SaintArnouldToken.sol");
 const rx = require('rx')
 
 let meta;
-const startblock = 20
-const endblock = 24
+const sblock = 1272315
+const eblock = 1272343
 const sendETH = 50
 
 
@@ -20,10 +20,10 @@ contract('SaintArnould', function (accounts) {
   it(`should be blocktime start= ${startblock} end= ${endblock}`, function (done) {
     meta.fundingStartBlock.call().then(function (startblock) {
       // console.log(startblock.toNumber())
-      assert.equal(startblock.toNumber(), startblock, "startblock is not match");
+      assert.equal(startblock.toNumber(), sblock, "startblock is not match");
       return meta.fundingEndBlock.call().then((function (endblock) {
         // console.log(endblock.toNumber())
-        assert.equal(endblock.toNumber(), endblock, "endblock is not match");
+        assert.equal(endblock.toNumber(), eblock, "endblock is not match");
 
         done()
       }))
